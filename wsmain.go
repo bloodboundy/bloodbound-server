@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 
+	"github.com/bloodboundy/bloodbound-server/net"
 	"github.com/gorilla/websocket"
 )
 
@@ -17,6 +19,7 @@ func wsMain(w http.ResponseWriter, r *http.Request) {
 	}
 	defer ws.Close()
 
+	ctx := r.Context()
 	for {
 		mt, msg, err := ws.ReadMessage()
 		if err != nil {
@@ -24,18 +27,18 @@ func wsMain(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
-		err = handleWSMsg(ws, mt, msg)
+		err = handleWSMsg(ctx, ws, mt, msg)
 		if err != nil {
 			log.Print("ws.handle: ", err)
 		}
 	}
 }
 
-func handleWSMsg(ws *websocket.Conn, mt int, msg []byte) error {
+func handleWSMsg(ctx context.Context, ws *websocket.Conn, mt int, msg []byte) error {
 	switch mt {
 	case websocket.TextMessage:
+		return net.HandleTextMessage(ctx, ws, msg)
 	default:
 		return nil
 	}
-	return nil
 }
