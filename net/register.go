@@ -7,10 +7,6 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func init() {
-	registerHandler("REGISTER", handleRegisterReq)
-}
-
 type RegisterReq struct {
 }
 

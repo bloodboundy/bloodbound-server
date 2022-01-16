@@ -9,12 +9,20 @@ import (
 	"github.com/pkg/errors"
 )
 
+// Req describes the request from client
 type Req struct {
+	// meta data of a req
 	ID   string `json:"id"`
 	Type string `json:"type"`
 
+	// req body, when add a new type req, need to add a field here and a register call in init()
 	REGISTER *RegisterReq `json:"REGISTER"`
 	LOGIN    *LoginReq    `json:"LOGIN"`
+}
+
+// init, register handler to handlerMap
+func init() {
+	registerHandler("REGISTER", handleRegisterReq)
 }
 
 type handler func(ctx context.Context, ws *websocket.Conn, req *Req) error
