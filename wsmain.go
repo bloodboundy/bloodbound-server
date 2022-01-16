@@ -39,7 +39,7 @@ func wsMain(w http.ResponseWriter, r *http.Request) {
 func handleWSMsg(ctx context.Context, ws *websocket.Conn, mt int, msg []byte) error {
 	switch mt {
 	case websocket.TextMessage:
-		return net.HandleTextMessage(ctx, ws, msg)
+		return net.HandleTextMessage(mixServerCtx(ctx), ws, msg)
 	default:
 		return nil
 	}
