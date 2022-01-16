@@ -1,6 +1,7 @@
 package player
 
 import (
+	"context"
 	"sync"
 
 	"github.com/google/uuid"
@@ -18,6 +19,20 @@ func NewManager() *Manager {
 		mu:      &sync.Mutex{},
 		players: make(map[string]*Player),
 	}
+}
+
+type ctxValueKey string
+
+const playerManagerCtxKey ctxValueKey = "pm"
+
+// PickManager pick manager from ctx
+func PickManager(ctx context.Context) *Manager {
+	return ctx.Value(playerManagerCtxKey).(*Manager)
+}
+
+// MixManager mix manager into ctx and return the child ctx
+func MixManager(ctx context.Context, m *Manager) context.Context {
+	return context.WithValue(ctx, playerManagerCtxKey, m)
 }
 
 func (m *Manager) Register() (string, error) {
