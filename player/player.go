@@ -7,7 +7,7 @@ import (
 
 type Player struct {
 	mu   *sync.Mutex
-	ID   string
+	ID   string `json:"id"`
 	game string
 }
 
