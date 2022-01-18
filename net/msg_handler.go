@@ -9,15 +9,26 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Req describes the request from client
-type Req struct {
-	// meta data of a req
+type meta struct {
+	// meta data of a msg
 	ID   string `json:"id"`
 	Type string `json:"type"`
+}
+
+// Req describes the request from client
+type Req struct {
+	meta
 
 	// req body, when add a new type req, need to add a field here and a register call in init()
 	REGISTER *RegisterReq `json:"REGISTER"`
 	LOGIN    *LoginReq    `json:"LOGIN"`
+}
+
+type Rsp struct {
+	meta
+
+	REGISTER *RegisterRsp `json:"REGISTER"`
+	LOGIN    *LoginRsp    `json:"LOGIN"`
 }
 
 // init, register handler to handlerMap
