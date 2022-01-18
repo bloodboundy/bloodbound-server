@@ -36,29 +36,30 @@ func MixManager(ctx context.Context, m *Manager) context.Context {
 	return context.WithValue(ctx, gameManagerCtxKey, m)
 }
 
-func (m *Manager) NewGame() (string, error) {
+func (m *Manager) NewGame() (*Game, error) {
 	var id string
 	for {
 		uu, err := uuid.NewUUID()
 		if err != nil {
-			return "", errors.Wrap(err, "new game id")
+			return nil, errors.Wrap(err, "new game id")
 		}
 		id = uu.String()
-		if m.tryNewGame(id) {
-			return id, nil
+		if g := m.tryNewGame(id); g != nil {
+			return g, nil
 		}
 	}
 }
 
-func (m *Manager) tryNewGame(id string) bool {
+func (m *Manager) tryNewGame(id string) *Game {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
 	if _, ok := m.games[id]; ok { // dup
-		return false
+		return nil
 	}
-	m.games[id] = &Game{ID: id, State: WAITING, Players: make(map[string]struct{})}
-	return true
+	g := &Game{ID: id, State: WAITING, Players: make(map[string]struct{})}
+	m.games[id] = g
+	return g
 }
 
 func (m *Manager) GetGame(id string) (*Game, bool) {
