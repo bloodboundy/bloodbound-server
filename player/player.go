@@ -6,16 +6,20 @@ import (
 )
 
 type Player struct {
-	mu   *sync.Mutex
-	ID   string `json:"id"`
-	game string
+	mu       *sync.Mutex
+	ID       string `json:"id"`
+	Nickname string `json:"nickname"`
+	game     string
 }
 
-func NewPlayer(id string, game string) *Player {
+// NewPlayer creates a new Player
+// `game` can be ommited when created without a certain game
+func NewPlayer(id string, nickname string, game string) *Player {
 	return &Player{
-		mu:   &sync.Mutex{},
-		ID:   id,
-		game: game,
+		mu:       &sync.Mutex{},
+		ID:       id,
+		Nickname: nickname,
+		game:     game,
 	}
 }
 

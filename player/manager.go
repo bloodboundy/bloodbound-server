@@ -35,7 +35,7 @@ func MixManager(ctx context.Context, m *Manager) context.Context {
 	return context.WithValue(ctx, playerManagerCtxKey, m)
 }
 
-func (m *Manager) Register() (*Player, error) {
+func (m *Manager) Register(nickname string) (*Player, error) {
 	var id string
 	for {
 		uu, err := uuid.NewUUID()
@@ -43,20 +43,20 @@ func (m *Manager) Register() (*Player, error) {
 			return nil, errors.Wrap(err, "new game id")
 		}
 		id = uu.String()
-		if p := m.tryRegister(id); p != nil {
+		if p := m.tryRegister(id, nickname); p != nil {
 			return p, nil
 		}
 	}
 }
 
-func (m *Manager) tryRegister(id string) *Player {
+func (m *Manager) tryRegister(id string, nickname string) *Player {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
 	if _, ok := m.players[id]; ok {
 		return nil
 	}
-	p := NewPlayer(id, "")
+	p := NewPlayer(id, nickname, "")
 	m.players[id] = p
 	return p
 }
