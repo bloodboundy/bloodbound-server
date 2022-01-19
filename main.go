@@ -26,6 +26,7 @@ func main() {
 
 	route := gin.Default()
 	route.Use(mixManagers)
+	route.Use(extractAuthorization)
 
 	route.Any("/ws", ws.Main)
 
