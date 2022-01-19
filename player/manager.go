@@ -60,3 +60,11 @@ func (m *Manager) tryRegister(id string) *Player {
 	m.players[id] = p
 	return p
 }
+
+func (m *Manager) Load(id string) (*Player, bool) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	p, ok := m.players[id]
+	return p, ok
+}
