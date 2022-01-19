@@ -21,8 +21,9 @@ func init() {
 	wsManager.Store(ws.NewManager())
 }
 
-func mixManagers() gin.HandlerFunc {
-	return func(c *gin.Context) {
+// mixManagers mix managers into request context
+// middleware used in gin
+func mixManagers(c *gin.Context) {
 		ctx := c.Request.Context()
 
 		ctx = game.MixManager(ctx, gameManager.Load().(*game.Manager))

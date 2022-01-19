@@ -25,7 +25,7 @@ func main() {
 	setupLogger()
 
 	route := gin.Default()
-	route.Use(mixManagers())
+	route.Use(mixManagers)
 
 	route.Any("/ws", ws.Main)
 
