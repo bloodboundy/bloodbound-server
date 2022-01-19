@@ -4,18 +4,14 @@ package main
 
 import (
 	"flag"
-	"net/http"
-	"os"
 
+	"github.com/bloodboundy/bloodbound-server/ws"
+	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 )
 
 // Net flags
 var ADDR = flag.String("addr", "localhost:8080", "http service address")
-
-var (
-	PATH_WS = flag.String("ws", "/ws", "websocket api path")
-)
 
 // Log flags
 var (
@@ -26,14 +22,12 @@ var (
 
 func main() {
 	flag.Parse()
-
 	setupLogger()
 
-	mux := http.NewServeMux()
-	mux.HandleFunc(*PATH_WS, wsMain)
+	route := gin.Default()
+	route.Use(mixManagers())
 
-	log.Fatal(http.ListenAndServe(*ADDR, mux))
-}
+	route.Any("/ws", ws.Main)
 
 	log.Fatal(route.Run(*ADDR))
 }
