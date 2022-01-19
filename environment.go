@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"strings"
 	"sync/atomic"
 
 	"github.com/bloodboundy/bloodbound-server/game"
@@ -24,14 +26,24 @@ func init() {
 // mixManagers mix managers into request context
 // middleware used in gin
 func mixManagers(c *gin.Context) {
-		ctx := c.Request.Context()
+	ctx := c.Request.Context()
 
-		ctx = game.MixManager(ctx, gameManager.Load().(*game.Manager))
-		ctx = player.MixManager(ctx, gameManager.Load().(*player.Manager))
-		ctx = ws.MixManager(ctx, wsManager.Load().(*ws.Manager))
+	ctx = game.MixManager(ctx, gameManager.Load().(*game.Manager))
+	ctx = player.MixManager(ctx, gameManager.Load().(*player.Manager))
+	ctx = ws.MixManager(ctx, wsManager.Load().(*ws.Manager))
 
-		c.Request = c.Request.WithContext(ctx)
+	c.Request = c.Request.WithContext(ctx)
 
-		c.Next()
+	c.Next()
+}
+
+func extractAuthorization(c *gin.Context) {
+	auth := c.Request.Header.Get("Authorization")
+	token := strings.Split(auth, "Bearer ")
+	if len(token) != 2 {
+		c.Error(fmt.Errorf("invalid authorization"))
+	} else {
+		c.Request.Header.Set("Authorization", token[1])
 	}
+	c.Next()
 }
