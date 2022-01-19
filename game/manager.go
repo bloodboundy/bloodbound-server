@@ -57,19 +57,19 @@ func (m *Manager) tryNewGame(id string) *Game {
 	if _, ok := m.games[id]; ok { // dup
 		return nil
 	}
-	g := &Game{ID: id, State: WAITING, Players: make(map[string]struct{})}
+	g := &Game{ID: id, Players: make(map[string]struct{})}
 	m.games[id] = g
 	return g
 }
 
-func (m *Manager) GetGame(id string) (*Game, bool) {
+func (m *Manager) Load(id string) (*Game, bool) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	game, ok := m.games[id]
 	return game, ok
 }
 
-func (m *Manager) RemoveGame(id string) error {
+func (m *Manager) Delete(id string) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
