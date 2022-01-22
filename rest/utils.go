@@ -27,3 +27,8 @@ func pickPlayer(c *gin.Context) *player.Player {
 	}
 	return p
 }
+
+// pickPID returns the player id in the header
+func pickPID(c *gin.Context) string {
+	return c.GetHeader("Authorization")
+}
