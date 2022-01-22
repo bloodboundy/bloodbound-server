@@ -46,7 +46,7 @@ func GetGamesGID(c *gin.Context) {
 	if g == nil {
 		return
 	}
-	if isPasswordWrong(c, g, c.Param("password")) {
+	if !isPassed(c, g, c.Param("password")) {
 		return
 	}
 	c.JSON(http.StatusOK, g.Dump())
@@ -57,8 +57,7 @@ func PatchGamesGID(c *gin.Context) {
 	if g == nil {
 		return
 	}
-	if g.Owner() != pickPID(c) {
-		c.String(http.StatusForbidden, "only owner can update game settings")
+	if !isOwner(c, g) {
 		return
 	}
 
@@ -78,6 +77,10 @@ func DeleteGamesGID(c *gin.Context) {
 	if g == nil {
 		return
 	}
+	if !isOwner(c, g) {
+		return
+	}
+
 	game.PickManager(c.Request.Context()).Delete(g.ID())
 	c.String(http.StatusOK, "")
 }
@@ -87,6 +90,10 @@ func GetGamesGIDPlayers(c *gin.Context) {
 	if g == nil {
 		return
 	}
+	if !isPassed(c, g, c.Param("password")) {
+		return
+	}
+
 	players := []*player.PlayerJSON{}
 	for _, p := range g.ListPlayers() {
 		players = append(players, p.Dump())
@@ -96,7 +103,8 @@ func GetGamesGIDPlayers(c *gin.Context) {
 
 func PostGamesGIDPlayers(c *gin.Context) {
 	type reqBody struct {
-		ID string `json:"id"`
+		ID       string `json:"id"`
+		Password string `json:"password"`
 	}
 	g := pickPathGame(c)
 	if g == nil {
@@ -119,6 +127,9 @@ func PostGamesGIDPlayers(c *gin.Context) {
 	}
 
 	if rb.ID == uid {
+		if !isPassed(c, g, rb.Password) {
+			return
+		}
 		if err := g.AddPlayer(p); err != nil {
 			c.String(http.StatusInternalServerError, errors.Wrap(err, "AddPlayer").Error())
 			return
