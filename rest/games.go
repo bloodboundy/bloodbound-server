@@ -38,7 +38,7 @@ func GetGames(c *gin.Context) {
 	c.JSON(200, result)
 }
 
-func PostGamesGameID(c *gin.Context) {
+func PostGamesGameIDPlayers(c *gin.Context) {
 	type reqBody struct {
 		ID string `json:"id"`
 	}
