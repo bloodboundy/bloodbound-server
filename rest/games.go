@@ -16,7 +16,7 @@ func PostGames(c *gin.Context) {
 		return
 	}
 
-	g := game.NewGame(c.GetHeader("Authorization"))
+	g := game.NewGame(pickPID(c))
 	if err := g.Load(&b); err != nil {
 		c.String(500, "Load: %v", err)
 		return
@@ -72,7 +72,7 @@ func PostGamesGIDPlayers(c *gin.Context) {
 		return
 	}
 
-	uid := c.GetHeader("Authorization")
+	uid := pickPID(c)
 	if rb.ID == "" {
 		rb.ID = uid
 	}
