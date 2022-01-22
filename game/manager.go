@@ -3,10 +3,6 @@ package game
 import (
 	"context"
 	"sync"
-	"time"
-
-	"github.com/bloodboundy/bloodbound-server/player"
-	"github.com/google/uuid"
 )
 
 type Manager struct {
@@ -36,32 +32,15 @@ func MixManager(ctx context.Context, m *Manager) context.Context {
 	return context.WithValue(ctx, gameManagerCtxKey, m)
 }
 
-func (m *Manager) NewGame(creatorID string) *Game {
-	var id string
-	for {
-		uu := uuid.New()
-		id = uu.String()
-		if g := m.tryNewGame(id, creatorID); g != nil {
-			return g
-		}
+func (m *Manager) LoadOrStore(game *Game) (actual *Game, loaded bool) {
+	actual, loaded = m.Load(game.ID())
+	if loaded {
+		return actual, loaded
 	}
-}
-
-func (m *Manager) tryNewGame(id string, creatorID string) *Game {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-
-	if _, ok := m.games[id]; ok { // dup
-		return nil
-	}
-	g := &Game{
-		ID:        id,
-		CreatedAt: uint64(time.Now().Unix()),
-		CreatedBy: creatorID,
-		players:   make(map[string]*player.Player),
-	}
-	m.games[id] = g
-	return g
+	m.games[game.ID()] = game
+	return game, false
 }
 
 func (m *Manager) Load(id string) (*Game, bool) {
@@ -69,6 +48,12 @@ func (m *Manager) Load(id string) (*Game, bool) {
 	defer m.mu.Unlock()
 	game, ok := m.games[id]
 	return game, ok
+}
+
+func (m *Manager) Store(game *Game) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	m.games[game.ID()] = game
 }
 
 // List all public games

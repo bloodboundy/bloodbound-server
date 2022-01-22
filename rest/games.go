@@ -10,17 +10,19 @@ func PostGames(c *gin.Context) {
 	var b game.GameJSON
 	if err := c.ShouldBindJSON(&b); err != nil {
 		c.String(500, errors.Wrap(err, "BindJSON").Error())
-	}
-
-	uid := c.GetHeader("Authorization")
-	gm := game.PickManager(c.Request.Context())
-	g := gm.NewGame(uid)
-	if err := g.Load(&b); err != nil {
-		gm.Delete(g.ID)
-		c.String(500, "Load: %v", err)
 		return
 	}
 
+	g := game.NewGame(c.GetHeader("Authorization"))
+	if err := g.Load(&b); err != nil {
+		c.String(500, "Load: %v", err)
+		return
+	}
+	_, loaded := game.PickManager(c.Request.Context()).LoadOrStore(g)
+	if loaded {
+		c.String(500, "game id dup")
+		return
+	}
 	c.JSON(200, g.Dump("players", "password"))
 }
 
