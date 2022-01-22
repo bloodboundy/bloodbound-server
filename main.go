@@ -40,6 +40,7 @@ func main() {
 	route.POST("/games", rest.PostGames)
 	// /games/{game_id}
 	route.GET("/games/:game_id", rest.GetGamesGID)
+	route.PATCH("/games/:game_id", rest.PatchGamesGID)
 	route.DELETE("/games/:game_id", rest.DeleteGamesGID)
 	route.GET("/games/:game_id/players", rest.GetGamesGIDPlayers)
 	route.POST("/games/:game_id/players", rest.PostGamesGIDPlayers)

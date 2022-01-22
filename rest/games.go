@@ -52,6 +52,26 @@ func GetGamesGID(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, g.Dump())
 }
+
+func PatchGamesGID(c *gin.Context) {
+	g := pickGame(c)
+	if g == nil {
+		return
+	}
+	if g.Owner() != pickPID(c) {
+		c.String(http.StatusForbidden, "only owner can update game settings")
+		return
+	}
+
+	var b game.GameJSON
+	if c.BindJSON(&b) != nil {
+		return
+	}
+	if err := g.Load(&b); err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, g.Dump())
 }
 
 func DeleteGamesGID(c *gin.Context) {
