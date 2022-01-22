@@ -47,6 +47,19 @@ func GetGamesGameID(c *gin.Context) {
 	c.JSON(200, g.Dump())
 }
 
+func GetGamesGameIDPlayers(c *gin.Context) {
+	g, ok := game.PickManager(c.Request.Context()).Load(c.Param("game_id"))
+	if !ok {
+		c.String(http.StatusNotFound, "game not found")
+		return
+	}
+	var players []*player.PlayerJSON
+	for _, p := range g.ListPlayers() {
+		players = append(players, p.Dump())
+	}
+	c.JSON(200, players)
+}
+
 func PostGamesGameIDPlayers(c *gin.Context) {
 	type reqBody struct {
 		ID string `json:"id"`
