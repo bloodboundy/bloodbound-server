@@ -11,7 +11,7 @@ type GameJSON struct {
 	// meta data
 	ID        string `json:"id,omitempty"`
 	CreatedAt uint64 `json:"created_at,omitempty"`
-	CreatedBy string `json:"created_by,omitempty"`
+	Owner     string `json:"owner,omitempty"`
 
 	// settings
 	MaxPlayers *uint32 `json:"max_players,omitempty"`
@@ -47,7 +47,7 @@ func (g *Game) Dump(addition ...string) *GameJSON {
 		MaxPlayers: proto.Uint32(g.maxPlayers),
 		IsPrivate:  g.IsPrivate(),
 		CreatedAt:  g.createdAt,
-		CreatedBy:  g.createdBy,
+		Owner:      g.owner,
 		Players:    players,
 	}
 

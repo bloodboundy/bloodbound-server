@@ -17,7 +17,7 @@ type Game struct {
 	// meta data
 	id        string
 	createdAt uint64
-	createdBy string
+	owner     string
 
 	// settings
 	maxPlayers uint32
@@ -31,7 +31,7 @@ func NewGame(createdBy string) *Game {
 	return &Game{
 		id:        uuid.NewString(),
 		createdAt: uint64(time.Now().Unix()),
-		createdBy: createdBy,
+		owner:     createdBy,
 		players:   make(map[string]*player.Player),
 	}
 }
@@ -92,3 +92,5 @@ func (g *Game) ListPlayers() []*player.Player {
 	}
 	return result
 }
+
+func (g *Game) Owner() string { return g.owner }
