@@ -5,9 +5,10 @@ package main
 import (
 	"flag"
 
+	"github.com/bloodboundy/bloodbound-server/rest"
 	"github.com/bloodboundy/bloodbound-server/ws"
 	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
 // Net flags
@@ -28,7 +29,15 @@ func main() {
 	route.Use(mixManagers)
 	route.Use(extractAuthorization)
 
+	// /ws
 	route.Any("/ws", ws.Main)
 
-	log.Fatal(route.Run(*ADDR))
+	// /register
+	route.GET("/register", rest.GetRegister)
+
+	// /games
+	route.GET("/games", rest.GetGames)
+	route.POST("/games", rest.PostGames)
+
+	logrus.Fatal(route.Run(*ADDR))
 }
