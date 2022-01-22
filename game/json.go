@@ -19,7 +19,7 @@ type GameJSON struct {
 	Password   string  `json:"password,omitempty"`
 
 	// contained data
-	Players []*player.Player `json:"players,omitempty"`
+	Players []*player.PlayerJSON `json:"players,omitempty"`
 }
 
 // Load settings from `src`
@@ -36,13 +36,18 @@ func (g *Game) Load(src *GameJSON) error {
 // normally, the "password" were filter out from ret-val
 // include it in addition to add it into ret-val
 func (g *Game) Dump(addition ...string) *GameJSON {
+	var players []*player.PlayerJSON
+	for _, p := range g.ListPlayers() {
+		players = append(players, p.Dump())
+	}
+
 	gj := &GameJSON{
 		ID:         g.id,
 		MaxPlayers: proto.Uint32(g.maxPlayers),
 		IsPrivate:  g.IsPrivate(),
 		CreatedAt:  g.createdAt,
 		CreatedBy:  g.createdBy,
-		Players:    g.ListPlayers(),
+		Players:    players,
 	}
 
 	for _, field := range addition {
