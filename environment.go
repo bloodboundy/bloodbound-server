@@ -29,7 +29,7 @@ func mixManagers(c *gin.Context) {
 	ctx := c.Request.Context()
 
 	ctx = game.MixManager(ctx, gameManager.Load().(*game.Manager))
-	ctx = player.MixManager(ctx, gameManager.Load().(*player.Manager))
+	ctx = player.MixManager(ctx, playerManager.Load().(*player.Manager))
 	ctx = ws.MixManager(ctx, wsManager.Load().(*ws.Manager))
 
 	c.Request = c.Request.WithContext(ctx)
