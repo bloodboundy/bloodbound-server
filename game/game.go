@@ -61,6 +61,8 @@ func (g *Game) IsPrivate() bool {
 	return g.password != ""
 }
 
+func (g *Game) Password() string { return g.password }
+
 func (g *Game) AddPlayer(p *player.Player) error {
 	if len(g.players) >= int(g.GetMaxPlayers()) {
 		return fmt.Errorf("the game is full")
