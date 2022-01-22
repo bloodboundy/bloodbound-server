@@ -33,6 +33,9 @@ func GetGames(c *gin.Context) {
 	games := game.PickManager(c.Request.Context()).List()
 	result := []*game.GameJSON{}
 	for _, game := range games {
+		if game.IsPrivate() {
+			continue
+		}
 		result = append(result, game.Dump())
 	}
 	c.JSON(200, result)
