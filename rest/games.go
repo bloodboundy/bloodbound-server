@@ -18,7 +18,7 @@ func PostGames(c *gin.Context) {
 
 	g := game.NewGame(pickPID(c))
 	if err := g.Load(&b); err != nil {
-		c.String(500, "Load: %v", err)
+		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
 	_, loaded := game.PickManager(c.Request.Context()).LoadOrStore(g)
