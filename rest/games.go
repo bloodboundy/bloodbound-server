@@ -46,6 +46,15 @@ func GetGamesGID(c *gin.Context) {
 	c.JSON(200, g.Dump())
 }
 
+func DeleteGamesGID(c *gin.Context) {
+	g := pickGame(c)
+	if g == nil {
+		return
+	}
+	game.PickManager(c.Request.Context()).Delete(g.ID())
+	c.String(http.StatusOK, "")
+}
+
 func GetGamesGIDPlayers(c *gin.Context) {
 	g := pickGame(c)
 	if g == nil {
