@@ -18,5 +18,5 @@ func GetRegister(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, p)
+	c.JSON(200, p.Dump())
 }
