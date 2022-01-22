@@ -76,5 +76,9 @@ func (m *Manager) Delete(id string) {
 	if !ok {
 		return
 	}
+
+	for _, p := range m.games[id].players {
+		p.Leave()
+	}
 	delete(m.games, id)
 }
