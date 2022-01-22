@@ -24,11 +24,12 @@ type GameJSON struct {
 
 // Load settings from `src`
 func (g *Game) Load(src *GameJSON) error {
+	var e error
 	if err := g.SetMaxPlayers(src.MaxPlayers); err != nil {
-		return errors.Wrap(err, "setMaxPlayers")
+		e = errors.Wrap(err, "setMaxPlayers")
 	}
 	g.password = src.Password
-	return nil
+	return e
 }
 
 // Dump game to GameJSON
