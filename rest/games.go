@@ -39,18 +39,16 @@ func GetGames(c *gin.Context) {
 }
 
 func GetGamesGameID(c *gin.Context) {
-	g, ok := game.PickManager(c.Request.Context()).Load(c.Param("game_id"))
-	if !ok {
-		c.String(http.StatusNotFound, "game not found")
+	g := pickGame(c)
+	if g == nil {
 		return
 	}
 	c.JSON(200, g.Dump())
 }
 
 func GetGamesGameIDPlayers(c *gin.Context) {
-	g, ok := game.PickManager(c.Request.Context()).Load(c.Param("game_id"))
-	if !ok {
-		c.String(http.StatusNotFound, "game not found")
+	g := pickGame(c)
+	if g == nil {
 		return
 	}
 	var players []*player.PlayerJSON
@@ -64,9 +62,8 @@ func PostGamesGameIDPlayers(c *gin.Context) {
 	type reqBody struct {
 		ID string `json:"id"`
 	}
-	g, ok := game.PickManager(c.Request.Context()).Load(c.Param("game_id"))
-	if !ok {
-		c.String(http.StatusNotFound, "game not found")
+	g := pickGame(c)
+	if g == nil {
 		return
 	}
 
