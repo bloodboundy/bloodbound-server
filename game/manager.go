@@ -2,11 +2,11 @@ package game
 
 import (
 	"context"
-	"fmt"
 	"sync"
+	"time"
 
+	"github.com/bloodboundy/bloodbound-server/player"
 	"github.com/google/uuid"
-	"github.com/pkg/errors"
 )
 
 type Manager struct {
@@ -36,28 +36,30 @@ func MixManager(ctx context.Context, m *Manager) context.Context {
 	return context.WithValue(ctx, gameManagerCtxKey, m)
 }
 
-func (m *Manager) NewGame() (*Game, error) {
+func (m *Manager) NewGame(creatorID string) *Game {
 	var id string
 	for {
-		uu, err := uuid.NewUUID()
-		if err != nil {
-			return nil, errors.Wrap(err, "new game id")
-		}
+		uu := uuid.New()
 		id = uu.String()
-		if g := m.tryNewGame(id); g != nil {
-			return g, nil
+		if g := m.tryNewGame(id, creatorID); g != nil {
+			return g
 		}
 	}
 }
 
-func (m *Manager) tryNewGame(id string) *Game {
+func (m *Manager) tryNewGame(id string, creatorID string) *Game {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
 	if _, ok := m.games[id]; ok { // dup
 		return nil
 	}
-	g := &Game{ID: id, Players: make(map[string]struct{})}
+	g := &Game{
+		ID:        id,
+		CreatedAt: uint64(time.Now().Unix()),
+		CreatedBy: creatorID,
+		players:   make(map[string]*player.Player),
+	}
 	m.games[id] = g
 	return g
 }
@@ -69,14 +71,25 @@ func (m *Manager) Load(id string) (*Game, bool) {
 	return game, ok
 }
 
-func (m *Manager) Delete(id string) error {
+// List all public games
+func (m *Manager) List() []*Game {
+	result := []*Game{}
+	for _, game := range m.games {
+		if game.IsPrivate() {
+			continue
+		}
+		result = append(result, game)
+	}
+	return result
+}
+
+func (m *Manager) Delete(id string) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
 	_, ok := m.games[id]
 	if !ok {
-		return fmt.Errorf("game not exist: %v", id)
+		return
 	}
 	delete(m.games, id)
-	return nil
 }
