@@ -33,7 +33,7 @@ func (g *Game) Load(src *GameJSON) error {
 
 // Dump game to GameJSON
 //
-// normally, the "password", "players" were filter out from ret-val
+// normally, the "password" were filter out from ret-val
 // include it in addition to add it into ret-val
 func (g *Game) Dump(addition ...string) *GameJSON {
 	gj := &GameJSON{
@@ -42,16 +42,15 @@ func (g *Game) Dump(addition ...string) *GameJSON {
 		IsPrivate:  g.IsPrivate(),
 		CreatedAt:  g.createdAt,
 		CreatedBy:  g.createdBy,
+		Players:    g.ListPlayers(),
 	}
 
 	for _, field := range addition {
 		switch field {
 		case "password":
 			gj.Password = g.password
-		case "players":
-			gj.Players = g.ListPlayers()
+		default:
 		}
 	}
-
 	return gj
 }

@@ -26,14 +26,14 @@ func PostGames(c *gin.Context) {
 		c.String(500, "game id dup")
 		return
 	}
-	c.JSON(200, g.Dump("players", "password"))
+	c.JSON(200, g.Dump("password"))
 }
 
 func GetGames(c *gin.Context) {
 	games := game.PickManager(c.Request.Context()).List()
 	result := []*game.GameJSON{}
 	for _, game := range games {
-		result = append(result, game.Dump("players"))
+		result = append(result, game.Dump())
 	}
 	c.JSON(200, result)
 }
