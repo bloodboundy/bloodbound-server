@@ -7,9 +7,9 @@ import (
 
 type Player struct {
 	mu       *sync.Mutex
-	ID       string `json:"id"`
-	Nickname string `json:"nickname"`
-	game     string
+	ID       string `json:"id,omitempty"`
+	Nickname string `json:"nickname,omitempty"`
+	game     string // which game this player joined now
 }
 
 // NewPlayer creates a new Player
