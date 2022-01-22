@@ -42,7 +42,7 @@ func GetGames(c *gin.Context) {
 }
 
 func GetGamesGID(c *gin.Context) {
-	g := pickGame(c)
+	g := pickPathGame(c)
 	if g == nil {
 		return
 	}
@@ -53,7 +53,7 @@ func GetGamesGID(c *gin.Context) {
 }
 
 func PatchGamesGID(c *gin.Context) {
-	g := pickGame(c)
+	g := pickPathGame(c)
 	if g == nil {
 		return
 	}
@@ -74,7 +74,7 @@ func PatchGamesGID(c *gin.Context) {
 }
 
 func DeleteGamesGID(c *gin.Context) {
-	g := pickGame(c)
+	g := pickPathGame(c)
 	if g == nil {
 		return
 	}
@@ -83,7 +83,7 @@ func DeleteGamesGID(c *gin.Context) {
 }
 
 func GetGamesGIDPlayers(c *gin.Context) {
-	g := pickGame(c)
+	g := pickPathGame(c)
 	if g == nil {
 		return
 	}
@@ -98,7 +98,7 @@ func PostGamesGIDPlayers(c *gin.Context) {
 	type reqBody struct {
 		ID string `json:"id"`
 	}
-	g := pickGame(c)
+	g := pickPathGame(c)
 	if g == nil {
 		return
 	}
@@ -113,9 +113,8 @@ func PostGamesGIDPlayers(c *gin.Context) {
 		rb.ID = uid
 	}
 
-	p, ok := player.PickManager(c.Request.Context()).Load(rb.ID)
-	if !ok {
-		c.String(http.StatusNotFound, "player not found")
+	p := pickPlayer(c, rb.ID)
+	if p == nil {
 		return
 	}
 
@@ -131,11 +130,11 @@ func PostGamesGIDPlayers(c *gin.Context) {
 }
 
 func DeleteGamesGIDPlayersPID(c *gin.Context) {
-	g := pickGame(c)
+	g := pickPathGame(c)
 	if g == nil {
 		return
 	}
-	p := pickPlayer(c)
+	p := pickPathPlayer(c)
 	if p == nil {
 		return
 	}

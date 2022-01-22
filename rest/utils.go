@@ -8,9 +8,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// pickGame helper to get the game in the path params, handle 404
-func pickGame(c *gin.Context) *game.Game {
-	g, ok := game.PickManager(c.Request.Context()).Load(c.Param("game_id"))
+const (
+	PATH_KEY_GID = "game_id"
+	PATH_KEY_PID = "player_id"
+)
+
+// pickPathGame helper to get the game in the path params, handle 404
+func pickPathGame(c *gin.Context) *game.Game {
+	return pickGame(c, c.Param(PATH_KEY_GID))
+}
+
+func pickGame(c *gin.Context, gid string) *game.Game {
+	g, ok := game.PickManager(c.Request.Context()).Load(gid)
 	if !ok {
 		c.String(http.StatusNotFound, "game not found")
 		return nil
@@ -18,9 +27,13 @@ func pickGame(c *gin.Context) *game.Game {
 	return g
 }
 
-// pickPlayer helper to get the player in the path params, handle 404
-func pickPlayer(c *gin.Context) *player.Player {
-	p, ok := player.PickManager(c.Request.Context()).Load(c.Param("player_id"))
+// pickPathPlayer helper to get the player in the path params, handle 404
+func pickPathPlayer(c *gin.Context) *player.Player {
+	return pickPlayer(c, c.Param(PATH_KEY_PID))
+}
+
+func pickPlayer(c *gin.Context, pid string) *player.Player {
+	p, ok := player.PickManager(c.Request.Context()).Load(pid)
 	if !ok {
 		c.String(http.StatusNotFound, "player not found")
 		return nil
