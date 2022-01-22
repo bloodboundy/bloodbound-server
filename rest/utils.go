@@ -32,3 +32,11 @@ func pickPlayer(c *gin.Context) *player.Player {
 func pickPID(c *gin.Context) string {
 	return c.GetHeader("Authorization")
 }
+
+func isPasswordWrong(c *gin.Context, g *game.Game, pwd string) bool {
+	if g.IsPrivate() && g.Password() != c.Param("password") {
+		c.String(http.StatusForbidden, "wrong password")
+		return true
+	}
+	return false
+}
