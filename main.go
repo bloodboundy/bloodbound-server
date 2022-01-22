@@ -38,6 +38,7 @@ func main() {
 	// /games
 	route.GET("/games", rest.GetGames)
 	route.POST("/games", rest.PostGames)
+	route.POST("/games/:game_id", rest.PostGamesGameID)
 
 	logrus.Fatal(route.Run(*ADDR))
 }
