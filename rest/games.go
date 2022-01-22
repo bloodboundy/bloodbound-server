@@ -46,7 +46,12 @@ func GetGamesGID(c *gin.Context) {
 	if g == nil {
 		return
 	}
-	c.JSON(200, g.Dump())
+	if g.IsPrivate() && g.Password() != c.Param("password") {
+		c.String(http.StatusForbidden, "wrong password")
+		return
+	}
+	c.JSON(http.StatusOK, g.Dump())
+}
 }
 
 func DeleteGamesGID(c *gin.Context) {
