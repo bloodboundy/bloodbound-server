@@ -51,7 +51,7 @@ func GetGamesGIDPlayers(c *gin.Context) {
 	if g == nil {
 		return
 	}
-	var players []*player.PlayerJSON
+	players := []*player.PlayerJSON{}
 	for _, p := range g.ListPlayers() {
 		players = append(players, p.Dump())
 	}
