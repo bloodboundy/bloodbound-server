@@ -38,7 +38,7 @@ func GetGames(c *gin.Context) {
 	c.JSON(200, result)
 }
 
-func GetGamesGameID(c *gin.Context) {
+func GetGamesGID(c *gin.Context) {
 	g := pickGame(c)
 	if g == nil {
 		return
@@ -46,7 +46,7 @@ func GetGamesGameID(c *gin.Context) {
 	c.JSON(200, g.Dump())
 }
 
-func GetGamesGameIDPlayers(c *gin.Context) {
+func GetGamesGIDPlayers(c *gin.Context) {
 	g := pickGame(c)
 	if g == nil {
 		return
@@ -58,7 +58,7 @@ func GetGamesGameIDPlayers(c *gin.Context) {
 	c.JSON(200, players)
 }
 
-func PostGamesGameIDPlayers(c *gin.Context) {
+func PostGamesGIDPlayers(c *gin.Context) {
 	type reqBody struct {
 		ID string `json:"id"`
 	}
