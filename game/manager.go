@@ -56,13 +56,9 @@ func (m *Manager) Store(game *Game) {
 	m.games[game.ID()] = game
 }
 
-// List all public games
 func (m *Manager) List() []*Game {
 	result := []*Game{}
 	for _, game := range m.games {
-		if game.IsPrivate() {
-			continue
-		}
 		result = append(result, game)
 	}
 	return result
