@@ -6,8 +6,6 @@ import (
 
 	"github.com/bloodboundy/bloodbound-server/player"
 	"github.com/google/uuid"
-	"github.com/pkg/errors"
-	"google.golang.org/protobuf/proto"
 )
 
 const (
@@ -36,40 +34,6 @@ func NewGame(createdBy string) *Game {
 		createdBy: createdBy,
 		players:   make(map[string]*player.Player),
 	}
-}
-
-// Load settings from `src`
-func (g *Game) Load(src *GameJSON) error {
-	if err := g.SetMaxPlayers(src.MaxPlayers); err != nil {
-		return errors.Wrap(err, "setMaxPlayers")
-	}
-	g.password = src.Password
-	return nil
-}
-
-// Dump game to GameJSON
-//
-// normally, the "password", "players" were filter out from ret-val
-// include it in addition to add it into ret-val
-func (g *Game) Dump(addition ...string) *GameJSON {
-	gj := &GameJSON{
-		ID:         g.id,
-		MaxPlayers: proto.Uint32(g.maxPlayers),
-		IsPrivate:  g.IsPrivate(),
-		CreatedAt:  g.createdAt,
-		CreatedBy:  g.createdBy,
-	}
-
-	for _, field := range addition {
-		switch field {
-		case "password":
-			gj.Password = g.password
-		case "players":
-			gj.Players = g.ListPlayers()
-		}
-	}
-
-	return gj
 }
 
 func (g *Game) ID() string { return g.id }

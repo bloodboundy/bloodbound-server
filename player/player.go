@@ -24,13 +24,6 @@ func NewPlayer(nickname string) *Player {
 	}
 }
 
-func (p *Player) Dump() *PlayerJSON {
-	return &PlayerJSON{
-		ID:       p.id,
-		Nickname: p.nickname,
-	}
-}
-
 func (p *Player) ID() string { return p.id }
 
 func (p *Player) Nickname() string { return p.nickname }
