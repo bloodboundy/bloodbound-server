@@ -93,3 +93,22 @@ func PostGamesGIDPlayers(c *gin.Context) {
 	}
 	c.String(http.StatusOK, "")
 }
+
+func DeleteGamesGIDPlayersPID(c *gin.Context) {
+	g := pickGame(c)
+	if g == nil {
+		return
+	}
+	p := pickPlayer(c)
+	if p == nil {
+		return
+	}
+
+	if p.ID() == pickPID(c) {
+		g.RemovePlayer(p)
+	} else {
+		logrus.Error("TODO: kick")
+	}
+
+	c.String(http.StatusOK, "")
+}
