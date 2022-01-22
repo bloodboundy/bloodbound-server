@@ -107,16 +107,16 @@ func (g *Game) AddPlayer(p *player.Player) error {
 	if err := p.Join(g.id); err != nil {
 		return err
 	}
-	g.players[p.ID] = p
+	g.players[p.ID()] = p
 	return nil
 }
 
 func (g *Game) RemovePlayer(p *player.Player) {
-	if _, ok := g.players[p.ID]; !ok {
+	if _, ok := g.players[p.ID()]; !ok {
 		return
 	}
 	p.Leave()
-	delete(g.players, p.ID)
+	delete(g.players, p.ID())
 }
 
 func (g *Game) ListPlayers() []*player.Player {

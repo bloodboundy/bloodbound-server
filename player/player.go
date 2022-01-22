@@ -3,25 +3,37 @@ package player
 import (
 	"fmt"
 	"sync"
+
+	"github.com/google/uuid"
 )
 
 type Player struct {
 	mu       *sync.Mutex
-	ID       string `json:"id,omitempty"`
-	Nickname string `json:"nickname,omitempty"`
+	id       string
+	nickname string
 	game     string // which game this player joined now
 }
 
 // NewPlayer creates a new Player
 // `game` can be ommited when created without a certain game
-func NewPlayer(id string, nickname string, game string) *Player {
+func NewPlayer(nickname string) *Player {
 	return &Player{
 		mu:       &sync.Mutex{},
-		ID:       id,
-		Nickname: nickname,
-		game:     game,
+		id:       uuid.NewString(),
+		nickname: nickname,
 	}
 }
+
+func (p *Player) Dump() *PlayerJSON {
+	return &PlayerJSON{
+		ID:       p.id,
+		Nickname: p.nickname,
+	}
+}
+
+func (p *Player) ID() string { return p.id }
+
+func (p *Player) Nickname() string { return p.nickname }
 
 func (p *Player) Join(game string) error {
 	p.mu.Lock()

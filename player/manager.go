@@ -3,9 +3,6 @@ package player
 import (
 	"context"
 	"sync"
-
-	"github.com/google/uuid"
-	"github.com/pkg/errors"
 )
 
 type Manager struct {
@@ -36,29 +33,16 @@ func MixManager(ctx context.Context, m *Manager) context.Context {
 }
 
 func (m *Manager) Register(nickname string) (*Player, error) {
-	var id string
-	for {
-		uu, err := uuid.NewUUID()
-		if err != nil {
-			return nil, errors.Wrap(err, "new game id")
-		}
-		id = uu.String()
-		if p := m.tryRegister(id, nickname); p != nil {
-			return p, nil
-		}
-	}
-}
-
-func (m *Manager) tryRegister(id string, nickname string) *Player {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-
-	if _, ok := m.players[id]; ok {
-		return nil
+	for {
+		p := NewPlayer(nickname)
+		if _, ok := m.players[p.ID()]; ok {
+			continue
+		}
+		m.players[p.ID()] = p
+		return p, nil
 	}
-	p := NewPlayer(id, nickname, "")
-	m.players[id] = p
-	return p
 }
 
 func (m *Manager) Load(id string) (*Player, bool) {
