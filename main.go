@@ -9,6 +9,7 @@ import (
 	"github.com/bloodboundy/bloodbound-server/ws"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	_ "go.uber.org/automaxprocs"
 )
 
 // Net flags

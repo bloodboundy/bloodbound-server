@@ -8,5 +8,6 @@ require (
 	github.com/gorilla/websocket v1.4.2
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.1
+	go.uber.org/automaxprocs v1.4.0
 	google.golang.org/protobuf v1.27.1
 )
