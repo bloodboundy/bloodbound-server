@@ -12,10 +12,11 @@ type State struct {
 	items  []*component.Item   // items took
 }
 
-func NewPlayerState(player *Player, index uint32, char component.Character) *State {
+func NewState(player *Player, index uint32, char component.Character) *State {
 	return &State{
-		id:    player.ID(),
-		index: index,
-		char:  char,
+		id:     player.ID(),
+		index:  index,
+		char:   char,
+		tokens: make([]*component.Token, 0, 4),
 	}
 }
