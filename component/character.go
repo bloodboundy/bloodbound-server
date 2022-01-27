@@ -1,5 +1,7 @@
 package component
 
+import "math/rand"
+
 type char struct {
 	Clan
 	Clue Clan
@@ -49,4 +51,15 @@ var (
 
 func chary(clan Clan, clue Clan, rank uint32) Character {
 	return Character(&char{Clan: clan, Clue: clue, Rank: rank})
+}
+
+func RandCharN(r *rand.Rand, clan Clan, n int) []Character {
+	base := CharMap[clan]
+	picked := r.Perm(len(base))[:n]
+
+	result := make([]Character, 0, n)
+	for _, i := range picked {
+		result = append(result, base[i])
+	}
+	return result
 }
