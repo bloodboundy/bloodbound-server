@@ -56,7 +56,5 @@ func (m *Manager) Load(id string) (*websocket.Conn, bool) {
 func (m *Manager) Delete(id string) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-
 	delete(m.conns, id)
-	return
 }
