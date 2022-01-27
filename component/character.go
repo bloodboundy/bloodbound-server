@@ -1,17 +1,19 @@
 package component
 
 type char struct {
-	Clan string
-	Clue string
+	Clan
+	Clue Clan
 	Rank uint32
 }
 
 type Character *char
 
+type Clan string
+
 const (
-	BLUE_CLAN = "b"
-	RED_CLAN  = "r"
-	SEC_CLAN  = "s"
+	BLUE_CLAN Clan = "b"
+	RED_CLAN  Clan = "r"
+	SEC_CLAN  Clan = "s"
 )
 
 var (
@@ -38,10 +40,13 @@ var (
 	BS = chary(SEC_CLAN, BLUE_CLAN, 0) // blue clue inquisitor
 	RS = chary(SEC_CLAN, RED_CLAN, 0)  // red clue inquisitor
 
-	BChars = []Character{BS, B1, B2, B3, B4, B5, B6, B7, B8, B9}
-	RChars = []Character{RS, R1, R2, R3, R4, R5, R6, R7, R8, R9}
+	CharMap = map[Clan][]Character{
+		BLUE_CLAN: {B1, B2, B3, B4, B5, B6, B7, B8, B9},
+		RED_CLAN:  {R1, R2, R3, R4, R5, R6, R7, R8, R9},
+		SEC_CLAN:  {BS, RS},
+	}
 )
 
-func chary(clan string, clue string, rank uint32) Character {
+func chary(clan Clan, clue Clan, rank uint32) Character {
 	return Character(&char{Clan: clan, Clue: clue, Rank: rank})
 }

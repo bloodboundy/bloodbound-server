@@ -1,7 +1,7 @@
 package component
 
 type Token struct {
-	t     string // type, color
+	t     Clan   // type, color
 	gotAt uint32 // got at which round
 }
 
@@ -16,8 +16,8 @@ func NewRToken(gotAt uint32) *Token { return &Token{t: RED_CLAN, gotAt: gotAt} }
 
 func NewSToken(gotAt uint32) *Token { return &Token{t: SEC_CLAN, gotAt: gotAt} }
 
-func (t *Token) Type() string { return t.t }
+func (t *Token) Type() Clan { return t.t }
 
 func (t *Token) GotAt() uint32 { return t.gotAt }
 
-func (t *Token) Dump() *TokenJSON { return &TokenJSON{Type: t.t, GotAt: t.gotAt} }
+func (t *Token) Dump() *TokenJSON { return &TokenJSON{Type: string(t.t), GotAt: t.gotAt} }
