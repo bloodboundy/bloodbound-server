@@ -2,7 +2,8 @@ package ws
 
 import (
 	"context"
-	"fmt"
+	"github.com/pkg/errors"
+	"strings"
 	"sync"
 
 	"github.com/gorilla/websocket"
@@ -11,7 +12,7 @@ import (
 type Manager struct {
 	mu *sync.Mutex
 
-	conns map[string]*websocket.Conn
+	conns map[string]*websocket.Conn // key: player id
 }
 
 func NewManager() *Manager {
@@ -39,7 +40,7 @@ func (m *Manager) Store(id string, conn *websocket.Conn) error {
 	defer m.mu.Unlock()
 
 	if _, ok := m.conns[id]; ok {
-		return fmt.Errorf("the id already exists")
+		return errors.Errorf("the id already exists")
 	}
 	m.conns[id] = conn
 	return nil
@@ -57,4 +58,36 @@ func (m *Manager) Delete(id string) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	delete(m.conns, id)
+}
+
+func (m *Manager) BroadCast(jso interface{}, ids ...string) error {
+	wg := &sync.WaitGroup{}
+	mu := &sync.Mutex{}
+	errs := &strings.Builder{}
+	for _, id := range ids {
+		wg.Add(1)
+		go func(id string) {
+			if err := m.Send(jso, id); err != nil {
+				mu.Lock()
+				errs.WriteString("#" + id + ": " + err.Error())
+				mu.Unlock()
+			}
+			wg.Done()
+		}(id)
+	}
+	if err := errs.String(); err != "" {
+		return errors.New(err)
+	}
+	return nil
+}
+
+func (m *Manager) Send(jso interface{}, id string) error {
+	ws, ok := m.Load(id)
+	if !ok {
+		return errors.Errorf("ws conn not found for: %v", id)
+	}
+	if err := ws.WriteJSON(jso); err != nil {
+		return errors.Wrap(err, "ws.Write")
+	}
+	return nil
 }
