@@ -5,7 +5,7 @@ import (
 )
 
 type State struct {
-	id     string              // the player's id
+	ID     string              // the player's ID
 	index  uint32              // the index of the player
 	char   component.Character // character
 	tokens []*component.Token  // tokens took
@@ -14,7 +14,7 @@ type State struct {
 
 func NewState(player *Player, index uint32, char component.Character) *State {
 	return &State{
-		id:     player.ID(),
+		ID:     player.ID(),
 		index:  index,
 		char:   char,
 		tokens: make([]*component.Token, 0, 4),
