@@ -9,7 +9,7 @@ import (
 // GameJSON represents the JSON format of a game, used to communicate
 type GameJSON struct {
 	// meta data
-	ID        string `json:"id,omitempty"`
+	ID        string `json:"ID,omitempty"`
 	CreatedAt uint64 `json:"created_at,omitempty"`
 	Owner     string `json:"owner,omitempty"`
 
