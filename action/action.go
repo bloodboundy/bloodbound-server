@@ -3,6 +3,7 @@ package action
 import (
 	"context"
 	"encoding/json"
+
 	"github.com/bloodboundy/bloodbound-server/game"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -11,7 +12,6 @@ import (
 type actionType string
 
 const (
-	AskIntACT   actionType = "ask_int"
 	NoAskIntACT actionType = "no_ask_int"
 
 	IntACT   actionType = "int"
