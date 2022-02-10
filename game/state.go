@@ -64,3 +64,7 @@ func (s *State) PlayerIDs() []string {
 	}
 	return result
 }
+
+func (s *State) ResetWantedTo(wanted ...string) {
+	s.WantedActions = wanted
+}
