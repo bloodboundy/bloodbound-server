@@ -12,9 +12,9 @@ func resetWantedTo(state *game.State, acts ...actionType) {
 	}
 }
 
-func errIfNotInWanted(action Action, state *game.State) error {
+func errIfNotInWanted(actionType string, state *game.State) error {
 	for _, v := range state.WantedActions {
-		if action.Type() == v {
+		if actionType == v {
 			return nil
 		}
 	}
