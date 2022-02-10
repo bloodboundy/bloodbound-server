@@ -58,7 +58,7 @@ func (a *PassAction) Check(ctx context.Context, state *game.State) error {
 }
 
 func (a *PassAction) Apply(ctx context.Context, state *game.State) error {
-	resetWantedTo(state, TargetACT, PassACT)
+	state.ResetWantedTo(string(TargetACT), string(PassACT))
 	state.DaggerIn = a.to
 	if err := ws.PickManager(ctx).BroadCast(a.Dump(ctx, state), state.PlayerIDs()...); err != nil {
 		return errors.Wrap(err, "BroadCast")
