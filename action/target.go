@@ -3,6 +3,7 @@ package action
 import (
 	"context"
 	"encoding/json"
+
 	"github.com/bloodboundy/bloodbound-server/game"
 	"github.com/bloodboundy/bloodbound-server/ws"
 	"github.com/pkg/errors"
@@ -47,9 +48,6 @@ func (a *TargetAction) Dump(ctx context.Context, state *game.State) *TargetActio
 }
 
 func (a *TargetAction) Check(ctx context.Context, state *game.State) error {
-	if err := errIfNotInWanted(a, state); err != nil {
-		return err
-	}
 	if state.DaggerIn != a.from {
 		return errors.Errorf("not dagger holder,now dagger is in #%d", state.DaggerIn)
 	}

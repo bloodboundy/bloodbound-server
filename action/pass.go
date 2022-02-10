@@ -48,9 +48,6 @@ func (a *PassAction) Dump(ctx context.Context, state *game.State) *PassActionJSO
 }
 
 func (a *PassAction) Check(ctx context.Context, state *game.State) error {
-	if err := errIfNotInWanted(a, state); err != nil {
-		return err
-	}
 	if state.DaggerIn != a.from {
 		return errors.Errorf("not dagger holder,now dagger is in #%d", state.DaggerIn)
 	}
