@@ -3,7 +3,9 @@ package action
 import (
 	"context"
 	"encoding/json"
+
 	"github.com/bloodboundy/bloodbound-server/game"
+	"github.com/bloodboundy/bloodbound-server/ws"
 	"github.com/pkg/errors"
 )
 
@@ -37,6 +39,14 @@ type PassActionJSON struct {
 	To   uint32 `json:"to"`
 }
 
+func (a *PassAction) Dump(ctx context.Context, state *game.State) *PassActionJSON {
+	return &PassActionJSON{
+		actionJSONComm: actionJSONComm{Type: a.Type(), Operator: a.Operator(), Round: state.Round},
+		From:           a.from,
+		To:             a.to,
+	}
+}
+
 func (a *PassAction) Check(ctx context.Context, state *game.State) error {
 	if err := errIfNotInWanted(a, state); err != nil {
 		return err
@@ -53,5 +63,8 @@ func (a *PassAction) Check(ctx context.Context, state *game.State) error {
 func (a *PassAction) Apply(ctx context.Context, state *game.State) error {
 	resetWantedTo(state, TargetACT, PassACT)
 	state.DaggerIn = a.to
+	if err := ws.PickManager(ctx).BroadCast(a.Dump(ctx, state), state.PlayerIDs()...); err != nil {
+		return errors.Wrap(err, "BroadCast")
+	}
 	return nil
 }
