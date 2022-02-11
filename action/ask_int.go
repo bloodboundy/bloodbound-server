@@ -16,7 +16,7 @@ func init() {
 		func(ctx context.Context, state *game.State, jsi interface{}) (Action, error) {
 			jso := jsi.(*AskIntActionJSON)
 			return &AskIntAction{
-				actionComm: actionComm{t: TargetACT, op: jso.Operator},
+				actionComm: jso.makeActionComm(TargetACT),
 				from:       jso.From,
 			}, nil
 		})
@@ -36,7 +36,7 @@ type AskIntActionJSON struct {
 
 func (a *AskIntAction) Dump(ctx context.Context, state *game.State) *AskIntActionJSON {
 	return &AskIntActionJSON{
-		actionJSONComm: makeActionJSONComm(a.actionComm, state),
+		actionJSONComm: a.makeActionJSONComm(state),
 		From:           a.from,
 		Attacker:       state.DaggerIn,
 	}
