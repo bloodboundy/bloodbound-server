@@ -3,6 +3,7 @@ package action
 import (
 	"context"
 	"encoding/json"
+	"reflect"
 
 	"github.com/bloodboundy/bloodbound-server/game"
 	"github.com/pkg/errors"
@@ -25,16 +26,23 @@ const (
 	SkillACT actionType = "skill"
 )
 
-type actionLoader func(ctx context.Context, state *game.State, data []byte) (Action, error)
+// actionLoader load jsi(action json in interface{} type) into Action
+// type(jsi)==type(marshalType), marshalType is the arg in registerLoader
+type actionLoader func(ctx context.Context, state *game.State, jsi interface{}) (Action, error)
 
 var loaderMap = map[string]actionLoader{}
+var marshalMap = map[string]interface{}{}
 
-func registerLoader(at actionType, loader actionLoader) {
+func registerLoader(at actionType, marshalType interface{}, loader actionLoader) {
 	ats := string(at)
 	if _, ok := loaderMap[ats]; ok {
 		logrus.Panicf("dup loader: %v", ats)
 	}
 	loaderMap[ats] = loader
+	if _, ok := marshalMap[ats]; ok {
+		logrus.Panicf("dup marshalType: %v", ats)
+	}
+	marshalMap[ats] = marshalType
 }
 
 func Load(ctx context.Context, state *game.State, data []byte) (Action, error) {
@@ -48,7 +56,12 @@ func Load(ctx context.Context, state *game.State, data []byte) (Action, error) {
 	if _, ok := loaderMap[ajc.Type]; !ok {
 		return nil, errors.Errorf("action type not found: %v", ajc.Type)
 	}
-	return loaderMap[ajc.Type](ctx, state, data)
+
+	jsi := reflect.New(reflect.TypeOf(marshalMap[ajc.Type]))
+	if err := json.Unmarshal(data, jsi.Interface()); err != nil {
+		return nil, errors.Wrap(err, "unmarshal data")
+	}
+	return loaderMap[ajc.Type](ctx, state, jsi)
 }
 
 type Action interface {
@@ -78,4 +91,12 @@ type actionJSONComm struct {
 	Type     string `json:"type"`
 	Operator string `json:"operator"`
 	Round    uint32 `json:"round"`
+}
+
+func makeActionJSONComm(a actionComm, state *game.State) actionJSONComm {
+	return actionJSONComm{
+		Type:     a.Type(),
+		Operator: a.Operator(),
+		Round:    state.Round,
+	}
 }

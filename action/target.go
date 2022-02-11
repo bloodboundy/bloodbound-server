@@ -2,7 +2,6 @@ package action
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/bloodboundy/bloodbound-server/game"
 	"github.com/bloodboundy/bloodbound-server/ws"
@@ -13,16 +12,13 @@ const TargetACT actionType = "target"
 
 func init() {
 	registerLoader(
-		TargetACT,
-		func(ctx context.Context, state *game.State, data []byte) (Action, error) {
-			taj := &TargetActionJSON{}
-			if err := json.Unmarshal(data, taj); err != nil {
-				return nil, errors.Wrap(err, "unmarshal")
-			}
+		TargetACT, TargetActionJSON{},
+		func(ctx context.Context, state *game.State, jsi interface{}) (Action, error) {
+			jso := jsi.(*TargetActionJSON)
 			return &TargetAction{
-				actionComm: actionComm{t: TargetACT, op: taj.Operator},
-				from:       taj.From,
-				to:         taj.To,
+				actionComm: actionComm{t: TargetACT, op: jso.Operator},
+				from:       jso.From,
+				to:         jso.To,
 			}, nil
 		})
 }
