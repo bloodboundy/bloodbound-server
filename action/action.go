@@ -88,6 +88,15 @@ func (ac actionComm) Operator() string {
 	return ac.op
 }
 
+func (ac actionComm) makeActionJSONComm(state *game.State) actionJSONComm {
+	return actionJSONComm{
+		Type:     ac.Type(),
+		Operator: ac.Operator(),
+		Round:    state.Round,
+		From:     ac.from,
+	}
+}
+
 type actionJSONComm struct {
 	Type     string `json:"type"`
 	Operator string `json:"operator"`
@@ -100,14 +109,5 @@ func (aj actionJSONComm) makeActionComm(t actionType) actionComm {
 		t:    t,
 		op:   aj.Operator,
 		from: aj.From,
-	}
-}
-
-func (a actionComm) makeActionJSONComm(state *game.State) actionJSONComm {
-	return actionJSONComm{
-		Type:     a.Type(),
-		Operator: a.Operator(),
-		Round:    state.Round,
-		From:     a.from,
 	}
 }
