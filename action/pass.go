@@ -16,7 +16,7 @@ func init() {
 		func(ctx context.Context, state *game.State, jsi interface{}) (Action, error) {
 			jso := jsi.(*PassActionJSON)
 			return &PassAction{
-				actionComm: actionComm{t: TargetACT, op: jso.Operator},
+				actionComm: jso.makeActionComm(PassACT),
 				from:       jso.From,
 				to:         jso.To,
 			}, nil
@@ -37,7 +37,7 @@ type PassActionJSON struct {
 
 func (a *PassAction) Dump(ctx context.Context, state *game.State) *PassActionJSON {
 	return &PassActionJSON{
-		actionJSONComm: actionJSONComm{Type: a.Type(), Operator: a.Operator(), Round: state.Round},
+		actionJSONComm: a.makeActionJSONComm(state),
 		From:           a.from,
 		To:             a.to,
 	}
