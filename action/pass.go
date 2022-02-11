@@ -2,7 +2,6 @@ package action
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/bloodboundy/bloodbound-server/game"
 	"github.com/bloodboundy/bloodbound-server/ws"
@@ -13,16 +12,13 @@ const PassACT actionType = "pass"
 
 func init() {
 	registerLoader(
-		PassACT,
-		func(ctx context.Context, state *game.State, data []byte) (Action, error) {
-			paj := &PassActionJSON{}
-			if err := json.Unmarshal(data, paj); err != nil {
-				return nil, errors.Wrap(err, "unmarshal")
-			}
+		PassACT, PassActionJSON{},
+		func(ctx context.Context, state *game.State, jsi interface{}) (Action, error) {
+			jso := jsi.(*PassActionJSON)
 			return &PassAction{
-				actionComm: actionComm{t: TargetACT, op: paj.Operator},
-				from:       paj.From,
-				to:         paj.To,
+				actionComm: actionComm{t: TargetACT, op: jso.Operator},
+				from:       jso.From,
+				to:         jso.To,
 			}, nil
 		})
 }
