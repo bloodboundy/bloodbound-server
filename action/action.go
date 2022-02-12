@@ -75,9 +75,9 @@ type Action interface {
 }
 
 type actionComm struct {
-	t    actionType
-	op   string
-	from uint32
+	t     actionType
+	op    string
+	index uint32
 }
 
 func (ac actionComm) Type() string {
@@ -93,7 +93,7 @@ func (ac actionComm) makeActionJSONComm(state *game.State) actionJSONComm {
 		Type:     ac.Type(),
 		Operator: ac.Operator(),
 		Round:    state.Round,
-		From:     ac.from,
+		Index:    ac.index,
 	}
 }
 
@@ -101,13 +101,13 @@ type actionJSONComm struct {
 	Type     string `json:"type"`
 	Operator string `json:"operator"`
 	Round    uint32 `json:"round"`
-	From     uint32 `json:"from"`
+	Index    uint32 `json:"from"`
 }
 
 func (aj actionJSONComm) makeActionComm(t actionType) actionComm {
 	return actionComm{
-		t:    t,
-		op:   aj.Operator,
-		from: aj.From,
+		t:     t,
+		op:    aj.Operator,
+		index: aj.Index,
 	}
 }

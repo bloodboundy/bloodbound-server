@@ -17,7 +17,6 @@ func init() {
 			jso := jsi.(*PassActionJSON)
 			return &PassAction{
 				actionComm: jso.makeActionComm(PassACT),
-				from:       jso.From,
 				to:         jso.To,
 			}, nil
 		})
@@ -25,26 +24,23 @@ func init() {
 
 type PassAction struct {
 	actionComm
-	from uint32
-	to   uint32
+	to uint32
 }
 
 type PassActionJSON struct {
 	actionJSONComm
-	From uint32 `json:"from"`
-	To   uint32 `json:"to"`
+	To uint32 `json:"to"`
 }
 
 func (a *PassAction) Dump(ctx context.Context, state *game.State) *PassActionJSON {
 	return &PassActionJSON{
 		actionJSONComm: a.makeActionJSONComm(state),
-		From:           a.from,
 		To:             a.to,
 	}
 }
 
 func (a *PassAction) Check(ctx context.Context, state *game.State) error {
-	if state.DaggerIn != a.from {
+	if state.DaggerIn != a.index {
 		return errors.Errorf("not dagger holder,now dagger is in #%d", state.DaggerIn)
 	}
 	if int(a.to) > len(state.PlayerStates) {
