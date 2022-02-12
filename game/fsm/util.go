@@ -1,4 +1,4 @@
-package action
+package fsm
 
 import (
 	"github.com/pkg/errors"

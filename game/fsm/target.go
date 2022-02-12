@@ -1,9 +1,8 @@
-package action
+package fsm
 
 import (
 	"context"
 
-	"github.com/bloodboundy/bloodbound-server/game"
 	"github.com/bloodboundy/bloodbound-server/ws"
 	"github.com/pkg/errors"
 )
@@ -13,7 +12,7 @@ const TargetACT actionType = "target"
 func init() {
 	registerLoader(
 		TargetACT, TargetActionJSON{},
-		func(ctx context.Context, state *game.State, jsi interface{}) (Action, error) {
+		func(ctx context.Context, state *State, jsi interface{}) (Action, error) {
 			jso := jsi.(*TargetActionJSON)
 			return &TargetAction{
 				actionComm: jso.makeActionComm(TargetACT),
@@ -32,14 +31,14 @@ type TargetActionJSON struct {
 	To uint32 `json:"to"`
 }
 
-func (a *TargetAction) Dump(ctx context.Context, state *game.State) *TargetActionJSON {
+func (a *TargetAction) Dump(ctx context.Context, state *State) *TargetActionJSON {
 	return &TargetActionJSON{
 		actionJSONComm: a.makeActionJSONComm(state),
 		To:             a.to,
 	}
 }
 
-func (a *TargetAction) Check(ctx context.Context, state *game.State) error {
+func (a *TargetAction) Check(ctx context.Context, state *State) error {
 	if state.DaggerIn != a.index {
 		return errors.Errorf("not dagger holder,now dagger is in #%d", state.DaggerIn)
 	}
@@ -49,7 +48,7 @@ func (a *TargetAction) Check(ctx context.Context, state *game.State) error {
 	return nil
 }
 
-func (a *TargetAction) Apply(ctx context.Context, state *game.State) error {
+func (a *TargetAction) Apply(ctx context.Context, state *State) error {
 	state.ResetWantedTo(string(AskIntACT), string(NoAskIntACT))
 	state.DaggerTarget = a.to
 	if err := ws.PickManager(ctx).BroadCast(a.Dump(ctx, state), state.PlayerIDs()...); err != nil {

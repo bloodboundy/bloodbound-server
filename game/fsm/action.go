@@ -1,11 +1,10 @@
-package action
+package fsm
 
 import (
 	"context"
 	"encoding/json"
 	"reflect"
 
-	"github.com/bloodboundy/bloodbound-server/game"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
@@ -27,7 +26,7 @@ const (
 
 // actionLoader load jsi(action json in interface{} type) into Action
 // type(jsi)==type(marshalType), marshalType is the arg in registerLoader
-type actionLoader func(ctx context.Context, state *game.State, jsi interface{}) (Action, error)
+type actionLoader func(ctx context.Context, state *State, jsi interface{}) (Action, error)
 
 var loaderMap = map[string]actionLoader{}
 var marshalMap = map[string]interface{}{}
@@ -44,7 +43,7 @@ func registerLoader(at actionType, marshalType interface{}, loader actionLoader)
 	marshalMap[ats] = marshalType
 }
 
-func Load(ctx context.Context, state *game.State, data []byte) (Action, error) {
+func Load(ctx context.Context, state *State, data []byte) (Action, error) {
 	ajc := actionJSONComm{}
 	if err := json.Unmarshal(data, &ajc); err != nil {
 		return nil, errors.Wrap(err, "Load.Unmarshal")
@@ -67,10 +66,10 @@ type Action interface {
 	// Type getter for type
 	Type() string
 
-	Check(ctx context.Context, state *game.State) error
+	Check(ctx context.Context, state *State) error
 
 	// Apply process State according to the Action
-	Apply(ctx context.Context, state *game.State) error
+	Apply(ctx context.Context, state *State) error
 }
 
 type actionComm struct {
@@ -87,7 +86,7 @@ func (ac actionComm) Operator() string {
 	return ac.op
 }
 
-func (ac actionComm) makeActionJSONComm(state *game.State) actionJSONComm {
+func (ac actionComm) makeActionJSONComm(state *State) actionJSONComm {
 	return actionJSONComm{
 		Type:     ac.Type(),
 		Operator: ac.Operator(),
