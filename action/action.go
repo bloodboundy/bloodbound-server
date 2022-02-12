@@ -50,8 +50,8 @@ func Load(ctx context.Context, state *game.State, data []byte) (Action, error) {
 	if err := json.Unmarshal(data, &ajc); err != nil {
 		return nil, errors.Wrap(err, "Load.Unmarshal")
 	}
-	if err := errIfNotInWanted(ajc.Type, state); err != nil {
-		return nil, err
+	if !inStrings(ajc.Type, state.WantedActions) {
+		return nil, errors.Errorf("not acceptable, expected: %v", state.WantedActions)
 	}
 	if _, ok := loaderMap[ajc.Type]; !ok {
 		return nil, errors.Errorf("action type not found: %v", ajc.Type)
