@@ -3,7 +3,6 @@ package game
 import (
 	"fmt"
 	"math/rand"
-	"sync"
 	"time"
 
 	"github.com/bloodboundy/bloodbound-server/component"
@@ -13,9 +12,6 @@ import (
 var r = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 type State struct {
-	// protect following fields
-	MU *sync.Mutex
-
 	ID            string    // related game ID
 	Round         uint32    // current Round
 	DaggerIn      uint32    // now, dagger is in which player's hand(player index)
@@ -35,7 +31,6 @@ func NewState(game *Game, players []*player.Player) (*State, error) {
 		return nil, fmt.Errorf("not enough players: expected >=%d, got %d", MIN_PLAYERS, len(players))
 	}
 	return &State{
-		MU:           &sync.Mutex{},
 		ID:           game.ID(),
 		Round:        0,
 		DaggerIn:     0,

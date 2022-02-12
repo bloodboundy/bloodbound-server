@@ -2,15 +2,25 @@ package game
 
 import (
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/bloodboundy/bloodbound-server/player"
 	"github.com/google/uuid"
+	"github.com/pkg/errors"
 )
 
 const (
 	MIN_PLAYERS = 6
 	MAX_PLAYERS = 12
+)
+
+type GameStatus int
+
+const (
+	WAITING GameStatus = iota
+	STARTED
+	ENDED
 )
 
 type Game struct {
@@ -25,6 +35,10 @@ type Game struct {
 
 	// contained data
 	players map[string]*player.Player
+
+	mus    *sync.Mutex // protect state, status and actions
+	state  *State
+	status GameStatus
 }
 
 func NewGame(createdBy string) *Game {
@@ -33,6 +47,7 @@ func NewGame(createdBy string) *Game {
 		createdAt: uint64(time.Now().Unix()),
 		owner:     createdBy,
 		players:   make(map[string]*player.Player),
+		mus:       &sync.Mutex{},
 	}
 }
 
@@ -94,3 +109,30 @@ func (g *Game) ListPlayers() []*player.Player {
 }
 
 func (g *Game) Owner() string { return g.owner }
+
+func (g *Game) Start() error {
+	g.mus.Lock()
+	defer g.mus.Unlock()
+
+	if g.status != WAITING {
+		return errors.Errorf("game is not in waiting status, started or ended")
+	}
+	state, err := NewState(g, g.ListPlayers())
+	if err != nil {
+		return errors.Wrap(err, "Start")
+	}
+	g.state = state
+	g.status = STARTED
+	return nil
+}
+
+func (g *Game) Status() GameStatus {
+	return g.status
+}
+
+func (g *Game) ApplyAction() error {
+	g.mus.Lock()
+	defer g.mus.Unlock()
+
+	return nil
+}
