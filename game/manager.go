@@ -57,7 +57,7 @@ func (m *Manager) Store(game *Game) {
 }
 
 func (m *Manager) List() []*Game {
-	result := []*Game{}
+	var result []*Game
 	for _, game := range m.games {
 		result = append(result, game)
 	}

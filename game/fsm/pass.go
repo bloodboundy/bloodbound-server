@@ -31,14 +31,14 @@ type PassActionJSON struct {
 	To uint32 `json:"to"`
 }
 
-func (a *PassAction) Dump(ctx context.Context, state *State) *PassActionJSON {
+func (a *PassAction) Dump(_ context.Context, state *State) *PassActionJSON {
 	return &PassActionJSON{
 		actionJSONComm: a.makeActionJSONComm(state),
 		To:             a.to,
 	}
 }
 
-func (a *PassAction) Check(ctx context.Context, state *State) error {
+func (a *PassAction) Check(_ context.Context, state *State) error {
 	if state.DaggerIn != a.index {
 		return errors.Errorf("not dagger holder,now dagger is in #%d", state.DaggerIn)
 	}

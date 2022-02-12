@@ -25,15 +25,15 @@ func Main(c *gin.Context) {
 		handleConnError(c.Writer, errors.Wrap(err, "ws.upgrade"))
 		return
 	}
-	defer ws.Close()
+	defer func(ws *websocket.Conn) { _ = ws.Close() }(ws)
 
-	if err := wm.Store(uid, ws); err != nil {
+	if err = wm.Store(uid, ws); err != nil {
 		handleConnError(c.Writer, errors.Wrap(err, "wm.Store"))
 		return
 	}
 
 	for {
-		_, _, err := ws.ReadMessage()
+		_, _, err = ws.ReadMessage()
 		if err != nil {
 			wm.Delete(uid)
 			handleConnError(c.Writer, errors.Wrap(err, "ws.read"))

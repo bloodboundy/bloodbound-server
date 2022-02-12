@@ -31,14 +31,14 @@ type TargetActionJSON struct {
 	To uint32 `json:"to"`
 }
 
-func (a *TargetAction) Dump(ctx context.Context, state *State) *TargetActionJSON {
+func (a *TargetAction) Dump(_ context.Context, state *State) *TargetActionJSON {
 	return &TargetActionJSON{
 		actionJSONComm: a.makeActionJSONComm(state),
 		To:             a.to,
 	}
 }
 
-func (a *TargetAction) Check(ctx context.Context, state *State) error {
+func (a *TargetAction) Check(_ context.Context, state *State) error {
 	if state.DaggerIn != a.index {
 		return errors.Errorf("not dagger holder,now dagger is in #%d", state.DaggerIn)
 	}
@@ -51,8 +51,5 @@ func (a *TargetAction) Check(ctx context.Context, state *State) error {
 func (a *TargetAction) Apply(ctx context.Context, state *State) error {
 	state.ResetWantedTo(string(AskIntACT), string(NoAskIntACT))
 	state.DaggerTarget = a.to
-	if err := ws.PickManager(ctx).BroadCast(a.Dump(ctx, state), state.PlayerIDs()...); err != nil {
-		return errors.Wrap(err, "BroadCast")
-	}
-	return nil
+	return wrapIfErr(ws.PickManager(ctx).BroadCast(a.Dump(ctx, state), state.PlayerIDs()...), "BroadCast")
 }

@@ -15,7 +15,7 @@ type Player struct {
 }
 
 // NewPlayer creates a new Player
-// `game` can be ommited when created without a certain game
+// `game` can be omitted when created without a certain game
 func NewPlayer(nickname string) *Player {
 	return &Player{
 		mu:       &sync.Mutex{},

@@ -31,12 +31,12 @@ func PostGames(c *gin.Context) {
 
 func GetGames(c *gin.Context) {
 	games := game.PickManager(c.Request.Context()).List()
-	result := []*game.GameJSON{}
-	for _, game := range games {
-		if game.IsPrivate() {
+	var result []*game.GameJSON
+	for _, g := range games {
+		if g.IsPrivate() {
 			continue
 		}
-		result = append(result, game.Dump())
+		result = append(result, g.Dump())
 	}
 	c.JSON(200, result)
 }
@@ -94,7 +94,7 @@ func GetGamesGIDPlayers(c *gin.Context) {
 		return
 	}
 
-	players := []*player.PlayerJSON{}
+	players := []*player.JSON{}
 	for _, p := range g.ListPlayers() {
 		players = append(players, p.Dump())
 	}

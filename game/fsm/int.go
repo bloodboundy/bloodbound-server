@@ -30,14 +30,14 @@ type IntActionJSON struct {
 	To uint32 `json:"to"`
 }
 
-func (a *IntAction) Dump(ctx context.Context, state *State) *IntActionJSON {
+func (a *IntAction) Dump(_ context.Context, state *State) *IntActionJSON {
 	return &IntActionJSON{
 		actionJSONComm: a.makeActionJSONComm(state),
 		To:             a.to,
 	}
 }
 
-func (a *IntAction) Check(ctx context.Context, state *State) error {
+func (a *IntAction) Check(_ context.Context, state *State) error {
 	if state.DaggerTarget == a.index {
 		return errors.Errorf("can not intervene yourself")
 	}

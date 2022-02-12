@@ -5,6 +5,7 @@ package main
 import (
 	"flag"
 
+	"github.com/bloodboundy/bloodbound-server/config"
 	"github.com/bloodboundy/bloodbound-server/rest"
 	"github.com/bloodboundy/bloodbound-server/ws"
 	"github.com/gin-gonic/gin"
@@ -40,12 +41,12 @@ func main() {
 	route.GET("/games", rest.GetGames)
 	route.POST("/games", rest.PostGames)
 	// /games/{game_id}
-	route.GET("/games/:"+rest.PATH_GID, rest.GetGamesGID)
-	route.PATCH("/games/:"+rest.PATH_GID, rest.PatchGamesGID)
-	route.DELETE("/games/:"+rest.PATH_GID, rest.DeleteGamesGID)
-	route.GET("/games/:"+rest.PATH_GID+"/players", rest.GetGamesGIDPlayers)
-	route.POST("/games/:"+rest.PATH_GID+"/players", rest.PostGamesGIDPlayers)
-	route.DELETE("/games/:"+rest.PATH_GID+"/players/:"+rest.PATH_PID, rest.DeleteGamesGIDPlayersPID)
+	route.GET("/games/:"+config.PathGID, rest.GetGamesGID)
+	route.PATCH("/games/:"+config.PathGID, rest.PatchGamesGID)
+	route.DELETE("/games/:"+config.PathGID, rest.DeleteGamesGID)
+	route.GET("/games/:"+config.PathGID+"/players", rest.GetGamesGIDPlayers)
+	route.POST("/games/:"+config.PathGID+"/players", rest.PostGamesGIDPlayers)
+	route.DELETE("/games/:"+config.PathGID+"/players/:"+config.PathPID, rest.DeleteGamesGIDPlayersPID)
 
 	logrus.Fatal(route.Run(*ADDR))
 }

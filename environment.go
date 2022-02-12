@@ -41,7 +41,7 @@ func extractAuthorization(c *gin.Context) {
 	auth := c.Request.Header.Get("Authorization")
 	token := strings.Split(auth, "Bearer ")
 	if len(token) != 2 {
-		c.Error(fmt.Errorf("invalid authorization"))
+		_ = c.Error(fmt.Errorf("invalid authorization"))
 	} else {
 		c.Request.Header.Set("Authorization", token[1])
 	}

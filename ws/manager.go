@@ -2,9 +2,10 @@ package ws
 
 import (
 	"context"
-	"github.com/pkg/errors"
 	"strings"
 	"sync"
+
+	"github.com/pkg/errors"
 
 	"github.com/gorilla/websocket"
 )

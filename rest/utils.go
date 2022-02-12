@@ -3,19 +3,15 @@ package rest
 import (
 	"net/http"
 
+	"github.com/bloodboundy/bloodbound-server/config"
 	"github.com/bloodboundy/bloodbound-server/game"
 	"github.com/bloodboundy/bloodbound-server/player"
 	"github.com/gin-gonic/gin"
 )
 
-const (
-	PATH_GID = "game_id"
-	PATH_PID = "player_id"
-)
-
 // pickPathGame helper to get the game in the path params, handle 404
 func pickPathGame(c *gin.Context) *game.Game {
-	return pickGame(c, c.Param(PATH_GID))
+	return pickGame(c, c.Param(config.PathGID))
 }
 
 func pickGame(c *gin.Context, gid string) *game.Game {
@@ -29,7 +25,7 @@ func pickGame(c *gin.Context, gid string) *game.Game {
 
 // pickPathPlayer helper to get the player in the path params, handle 404
 func pickPathPlayer(c *gin.Context) *player.Player {
-	return pickPlayer(c, c.Param(PATH_PID))
+	return pickPlayer(c, c.Param(config.PathPID))
 }
 
 func pickPlayer(c *gin.Context, pid string) *player.Player {
