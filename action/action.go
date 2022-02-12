@@ -15,7 +15,6 @@ type actionType string
 const (
 	NoAskIntACT actionType = "no_ask_int"
 
-	IntACT   actionType = "int"
 	NoIntACT actionType = "no_int"
 
 	AcceptIntACT actionType = "accept_int"
