@@ -5,20 +5,17 @@ import (
 	"sync"
 	"time"
 
+	"github.com/bloodboundy/bloodbound-server/config"
+	"github.com/bloodboundy/bloodbound-server/game/fsm"
 	"github.com/bloodboundy/bloodbound-server/player"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 )
 
-const (
-	MIN_PLAYERS = 6
-	MAX_PLAYERS = 12
-)
-
-type GameStatus int
+type Status int
 
 const (
-	WAITING GameStatus = iota
+	WAITING Status = iota
 	STARTED
 	ENDED
 )
@@ -37,8 +34,8 @@ type Game struct {
 	players map[string]*player.Player
 
 	mus    *sync.Mutex // protect state, status and actions
-	state  *State
-	status GameStatus
+	state  *fsm.State
+	status Status
 }
 
 func NewGame(createdBy string) *Game {
@@ -57,12 +54,12 @@ func (g *Game) ID() string { return g.id }
 // when max not in (6,12], error returned
 func (g *Game) SetMaxPlayers(max *uint32) error {
 	if max == nil {
-		g.maxPlayers = MAX_PLAYERS
+		g.maxPlayers = config.GameMaxPlayers
 		return nil
 	}
 
-	if *max < MIN_PLAYERS || *max > MAX_PLAYERS {
-		return fmt.Errorf("unacceptable max_players: %v, expected [%d, %d]", *max, MIN_PLAYERS, MAX_PLAYERS)
+	if *max < config.GameMinPlayers || *max > config.GameMaxPlayers {
+		return fmt.Errorf("unacceptable max_players: %v, expected [%d, %d]", *max, config.GameMinPlayers, config.GameMaxPlayers)
 	}
 	g.maxPlayers = *max
 	return nil
@@ -117,7 +114,7 @@ func (g *Game) Start() error {
 	if g.status != WAITING {
 		return errors.Errorf("game is not in waiting status, started or ended")
 	}
-	state, err := NewState(g, g.ListPlayers())
+	state, err := fsm.NewState(g.ID(), g.ListPlayers())
 	if err != nil {
 		return errors.Wrap(err, "Start")
 	}
@@ -126,7 +123,7 @@ func (g *Game) Start() error {
 	return nil
 }
 
-func (g *Game) Status() GameStatus {
+func (g *Game) Status() Status {
 	return g.status
 }
 

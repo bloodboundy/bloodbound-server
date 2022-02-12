@@ -1,9 +1,8 @@
-package action
+package fsm
 
 import (
 	"context"
 
-	"github.com/bloodboundy/bloodbound-server/game"
 	"github.com/bloodboundy/bloodbound-server/ws"
 	"github.com/pkg/errors"
 )
@@ -12,7 +11,7 @@ const IntACT actionType = "int"
 
 func init() {
 	registerLoader(IntACT, IntActionJSON{},
-		func(ctx context.Context, state *game.State, jsi interface{}) (Action, error) {
+		func(ctx context.Context, state *State, jsi interface{}) (Action, error) {
 			jso := jsi.(*IntActionJSON)
 			return &IntAction{
 				actionComm: jso.makeActionComm(IntACT),
@@ -31,14 +30,14 @@ type IntActionJSON struct {
 	To uint32 `json:"to"`
 }
 
-func (a *IntAction) Dump(ctx context.Context, state *game.State) *IntActionJSON {
+func (a *IntAction) Dump(ctx context.Context, state *State) *IntActionJSON {
 	return &IntActionJSON{
 		actionJSONComm: a.makeActionJSONComm(state),
 		To:             a.to,
 	}
 }
 
-func (a *IntAction) Check(ctx context.Context, state *game.State) error {
+func (a *IntAction) Check(ctx context.Context, state *State) error {
 	if state.DaggerTarget == a.index {
 		return errors.Errorf("can not intervene yourself")
 	}
@@ -51,7 +50,7 @@ func (a *IntAction) Check(ctx context.Context, state *game.State) error {
 	return nil
 }
 
-func (a *IntAction) Apply(ctx context.Context, state *game.State) error {
+func (a *IntAction) Apply(ctx context.Context, state *State) error {
 	state.Ints = append(state.Ints, a.index)
 	return wrapIfErr(ws.PickManager(ctx).BroadCast(a.Dump(ctx, state), state.PlayerIDs()...), "BroadCast")
 }
