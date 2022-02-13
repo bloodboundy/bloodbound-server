@@ -114,7 +114,7 @@ func (g *Game) Start() error {
 	defer g.mus.Unlock()
 
 	if g.status != WAITING {
-		return errors.Errorf("game is not in waiting status, started or ended")
+		return errors.Errorf("game is not in waiting status")
 	}
 	state, err := fsm.NewState(g.ID(), g.ListPlayers())
 	if err != nil {
