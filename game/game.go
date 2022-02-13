@@ -1,6 +1,7 @@
 package game
 
 import (
+	"context"
 	"fmt"
 	"sync"
 	"time"
@@ -33,9 +34,10 @@ type Game struct {
 	// contained data
 	players map[string]*player.Player
 
-	mus    *sync.Mutex // protect state, status and actions
-	state  *fsm.State
-	status Status
+	mus     *sync.Mutex // protect state, status and actions
+	state   *fsm.State
+	status  Status
+	actions []fsm.Action
 }
 
 func NewGame(createdBy string) *Game {
@@ -127,9 +129,20 @@ func (g *Game) Status() Status {
 	return g.status
 }
 
-func (g *Game) ApplyAction() error {
+func (g *Game) ApplyAction(ctx context.Context, data []byte) error {
 	g.mus.Lock()
 	defer g.mus.Unlock()
 
+	action, err := fsm.Load(ctx, g.state, data)
+	if err != nil {
+		return errors.Wrap(err, "load")
+	}
+	if err = action.Check(ctx, g.state); err != nil {
+		return errors.Wrap(err, "check")
+	}
+	if err = action.Apply(ctx, g.state); err != nil {
+		return errors.Wrap(err, "apply")
+	}
+	g.actions = append(g.actions, action)
 	return nil
 }
