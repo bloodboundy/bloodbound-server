@@ -27,7 +27,7 @@ type AskIntActionJSON struct {
 	Attacker uint32 `json:"attacker"`
 }
 
-func (a *AskIntAction) Dump(_ context.Context, state *State) *AskIntActionJSON {
+func (a *AskIntAction) Dump(_ context.Context, state *State) interface{} {
 	return &AskIntActionJSON{
 		actionJSONComm: a.makeActionJSONComm(state),
 		Attacker:       state.DaggerIn,

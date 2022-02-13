@@ -70,6 +70,10 @@ type Action interface {
 
 	// Apply process State according to the Action
 	Apply(ctx context.Context, state *State) error
+
+	// Dump Action into a json format
+	// the interface{} returned should be able to fit json.Marshal()
+	Dump(context.Context, *State) interface{}
 }
 
 type actionComm struct {

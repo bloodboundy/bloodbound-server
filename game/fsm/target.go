@@ -31,7 +31,7 @@ type TargetActionJSON struct {
 	To uint32 `json:"to"`
 }
 
-func (a *TargetAction) Dump(_ context.Context, state *State) *TargetActionJSON {
+func (a *TargetAction) Dump(_ context.Context, state *State) interface{} {
 	return &TargetActionJSON{
 		actionJSONComm: a.makeActionJSONComm(state),
 		To:             a.to,

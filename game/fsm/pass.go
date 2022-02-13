@@ -31,7 +31,7 @@ type PassActionJSON struct {
 	To uint32 `json:"to"`
 }
 
-func (a *PassAction) Dump(_ context.Context, state *State) *PassActionJSON {
+func (a *PassAction) Dump(_ context.Context, state *State) interface{} {
 	return &PassActionJSON{
 		actionJSONComm: a.makeActionJSONComm(state),
 		To:             a.to,
