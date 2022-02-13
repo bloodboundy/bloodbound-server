@@ -49,7 +49,7 @@ func (a *TargetAction) Check(_ context.Context, state *State) error {
 }
 
 func (a *TargetAction) Apply(ctx context.Context, state *State) error {
-	state.ResetWantedTo(string(AskIntACT), string(NoAskIntACT))
+	state.ResetWantedTo(AskIntACT, NoAskIntACT)
 	state.DaggerTarget = a.to
 	return wrapIfErr(ws.PickManager(ctx).BroadCast(a.Dump(ctx, state), state.PlayerIDs()...), "BroadCast")
 }

@@ -42,7 +42,7 @@ func (a *AskIntAction) Check(_ context.Context, state *State) error {
 }
 
 func (a *AskIntAction) Apply(ctx context.Context, state *State) error {
-	state.ResetWantedTo(string(IntACT), string(NoIntACT))
+	state.ResetWantedTo(IntACT, NoIntACT)
 	state.Ints = nil
 	return wrapIfErr(ws.PickManager(ctx).BroadCast(a.Dump(ctx, state), state.PlayerIDs()...), "BroadCast")
 }

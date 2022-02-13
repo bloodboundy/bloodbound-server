@@ -69,6 +69,9 @@ func (s *State) PlayerIDs() []string {
 	return result
 }
 
-func (s *State) ResetWantedTo(wanted ...string) {
-	s.WantedActions = wanted
+func (s *State) ResetWantedTo(wanted ...actionType) {
+	s.WantedActions = make([]string, 0, len(wanted))
+	for _, v := range wanted {
+		s.WantedActions = append(s.WantedActions, string(v))
+	}
 }
