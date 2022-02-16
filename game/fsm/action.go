@@ -49,7 +49,7 @@ func Load(ctx context.Context, state *State, data []byte) (Action, error) {
 		return nil, errors.Wrap(err, "Load.Unmarshal")
 	}
 	if !inStrings(ajc.Type, state.WantedActions) {
-		return nil, errors.Errorf("not acceptable, expected: %v", state.WantedActions)
+		return nil, errors.Errorf("not acceptable action: %v, expected: %v", ajc.Type, state.WantedActions)
 	}
 	if _, ok := loaderMap[ajc.Type]; !ok {
 		return nil, errors.Errorf("action type not found: %v", ajc.Type)
@@ -59,7 +59,7 @@ func Load(ctx context.Context, state *State, data []byte) (Action, error) {
 	if err := json.Unmarshal(data, jsi.Interface()); err != nil {
 		return nil, errors.Wrap(err, "unmarshal data")
 	}
-	return loaderMap[ajc.Type](ctx, state, jsi)
+	return loaderMap[ajc.Type](ctx, state, jsi.Interface())
 }
 
 type Action interface {
