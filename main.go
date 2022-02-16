@@ -51,6 +51,8 @@ func main() {
 	route.DELETE("/games/:"+config.PathGID+"/players/:"+config.PathPID, rest.DeleteGamesGIDPlayersPID)
 	// /games/{game_id}/actions
 	route.POST("/games/:"+config.PathGID+"/actions", rest.PostGamesGIDActions)
+	// /games/{game_id}/status
+	route.PATCH("/games/:"+config.PathGID+"/status", rest.PatchGamesGIDStatus)
 
 	logrus.Fatal(route.Run(*ADDR))
 }
