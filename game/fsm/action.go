@@ -54,6 +54,9 @@ func Load(ctx context.Context, state *State, data []byte) (Action, error) {
 	if _, ok := loaderMap[ajc.Type]; !ok {
 		return nil, errors.Errorf("action type not found: %v", ajc.Type)
 	}
+	if !state.IsInGame(ajc.Operator) {
+		return nil, errors.New("you are not in the game")
+	}
 
 	jsi := reflect.New(reflect.TypeOf(marshalMap[ajc.Type]))
 	if err := json.Unmarshal(data, jsi.Interface()); err != nil {
