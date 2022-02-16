@@ -21,6 +21,7 @@ func PostGamesGIDActions(c *gin.Context) {
 	}
 	if err := g.ApplyAction(c.Request.Context(), data); err != nil {
 		c.String(http.StatusBadRequest, "apply action: %v", err)
+		return
 	}
 	c.String(http.StatusOK, "")
 }
