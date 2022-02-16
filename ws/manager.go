@@ -49,7 +49,7 @@ func (m *Manager) Store(id string, conn *websocket.Conn) error {
 
 func (m *Manager) Load(id string) (*websocket.Conn, bool) {
 	m.mu.Lock()
-	defer m.mu.Lock()
+	defer m.mu.Unlock()
 
 	conn, ok := m.conns[id]
 	return conn, ok
