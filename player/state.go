@@ -20,3 +20,7 @@ func NewState(player *Player, index uint32, char component.Character) *State {
 		tokens: make([]*component.Token, 0, 4),
 	}
 }
+
+func (s *State) Index() uint32 {
+	return s.index
+}
