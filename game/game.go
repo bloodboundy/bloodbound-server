@@ -132,6 +132,9 @@ func (g *Game) Status() Status {
 func (g *Game) ApplyAction(ctx context.Context, data []byte) error {
 	g.mus.Lock()
 	defer g.mus.Unlock()
+	if g.Status() == WAITING {
+		return errors.New("game is not started")
+	}
 
 	action, err := fsm.Load(ctx, g.state, data)
 	if err != nil {
