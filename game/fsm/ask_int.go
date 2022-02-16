@@ -35,7 +35,7 @@ func (a *AskIntAction) Dump(_ context.Context, state *State) interface{} {
 }
 
 func (a *AskIntAction) Check(_ context.Context, state *State) error {
-	if state.DaggerTarget != a.index {
+	if state.DaggerTarget != state.IndexByID(a.Operator()) {
 		return errors.Errorf("not dagger target, current dagger target is %d", state.DaggerTarget)
 	}
 	return nil

@@ -39,7 +39,7 @@ func (a *PassAction) Dump(_ context.Context, state *State) interface{} {
 }
 
 func (a *PassAction) Check(_ context.Context, state *State) error {
-	if state.DaggerIn != a.index {
+	if state.DaggerIn != state.IndexByID(a.Operator()) {
 		return errors.Errorf("not dagger holder,now dagger is in #%d", state.DaggerIn)
 	}
 	if int(a.to) > len(state.PlayerStates) {
