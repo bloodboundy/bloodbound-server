@@ -1,12 +1,10 @@
 package fsm
 
 import (
-	"fmt"
 	"math/rand"
 	"time"
 
 	"github.com/bloodboundy/bloodbound-server/component"
-	"github.com/bloodboundy/bloodbound-server/config"
 	"github.com/bloodboundy/bloodbound-server/player"
 )
 
@@ -28,14 +26,15 @@ type State struct {
 }
 
 func NewState(id string, players []*player.Player) (*State, error) {
-	if len(players) < config.GameMinPlayers {
-		return nil, fmt.Errorf("not enough players: expected >=%d, got %d", config.GameMinPlayers, len(players))
-	}
+	// if len(players) < config.GameMinPlayers {
+	// 	return nil, fmt.Errorf("not enough players: expected >=%d, got %d", config.GameMinPlayers, len(players))
+	// }
 	return &State{
-		ID:           id,
-		Round:        0,
-		DaggerIn:     0,
-		PlayerStates: makePlayerStates(players),
+		ID:            id,
+		Round:         0,
+		DaggerIn:      uint32(r.Int31n(int32(len(players)))),
+		WantedActions: []string{string(PassACT), string(TargetACT)},
+		PlayerStates:  makePlayerStates(players),
 	}, nil
 }
 

@@ -129,6 +129,12 @@ func (g *Game) Status() Status {
 	return g.status
 }
 
+func (g *Game) StateJSON() interface{} {
+	g.mus.Lock()
+	defer g.mus.Unlock()
+	return g.state
+}
+
 func (g *Game) ApplyAction(ctx context.Context, data []byte) error {
 	g.mus.Lock()
 	defer g.mus.Unlock()
