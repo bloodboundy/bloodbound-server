@@ -75,20 +75,20 @@ func (s *State) ResetWantedTo(wanted ...actionType) {
 	}
 }
 
-func (s *State) IsInGame(id string) bool {
+func (s *State) GetPlayerStateByID(id string) *player.State {
 	for _, v := range s.PlayerStates {
 		if v.ID == id {
-			return true
+			return v
 		}
 	}
-	return false
+	return nil
 }
 
-func (s *State) IndexByID(id string) uint32 {
+func (s *State) GetPlayerStateByIndex(index uint32) *player.State {
 	for _, v := range s.PlayerStates {
-		if v.ID == id {
-			return v.Index()
+		if v.Index() == index {
+			return v
 		}
 	}
-	return 0
+	return nil
 }

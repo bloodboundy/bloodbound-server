@@ -54,7 +54,7 @@ func Load(ctx context.Context, state *State, data []byte) (Action, error) {
 	if _, ok := loaderMap[ajc.Type]; !ok {
 		return nil, errors.Errorf("action type not found: %v", ajc.Type)
 	}
-	if !state.IsInGame(ajc.Operator) {
+	if state.GetPlayerStateByID(ajc.Operator) == nil {
 		return nil, errors.New("you are not in the game")
 	}
 

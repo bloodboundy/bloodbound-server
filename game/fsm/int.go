@@ -38,7 +38,8 @@ func (a *IntAction) Dump(_ context.Context, state *State) interface{} {
 }
 
 func (a *IntAction) Check(_ context.Context, state *State) error {
-	if state.DaggerTarget == state.IndexByID(a.Operator()) {
+	ps := state.GetPlayerStateByID(a.Operator())
+	if state.DaggerTarget == ps.Index() {
 		return errors.Errorf("can not intervene yourself")
 	}
 	if state.DaggerTarget != a.to {
